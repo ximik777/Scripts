@@ -1,19 +1,19 @@
 <?
 /*
   PgSql db class
-	Author: Grigoriy Stratov
+  Author: Grigoriy Stratov
 
 */
 
-class db_client
+class db_pgsql
 { 
 	var $db_hadnle; 
 	var $sql; 
 	var $error;
 	
-	function db_client($db_server = '', $db_name = '', $db_user = '', $db_pass = '') 
+	function db_client($db_host = '', $db_name = '', $db_user = '', $db_pass = '') 
 	{
-		if(!$this->db_hadnle = pg_connect('host='.$db_server.' dbname='.$db_name.' user='.$db_user.' password='.$db_pass)) 
+		if(!$this->db_hadnle = pg_connect('host='.$db_host.' dbname='.$db_name.' user='.$db_user.' password='.$db_pass)) 
 		{ 
 			$this->error = pg_last_error($this->db_hadnle); 
 			$this->db_hadnle = false; 
