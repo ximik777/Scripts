@@ -22,7 +22,6 @@ class db_mysql
     if(!$this->db_hadnle = @mysql_connect($this->db_host,$this->db_user,$this->db_pass))
     {
       $this->error = mysql_errno($this->db_hadnle).' '.mysql_error($this->db_hadnle);
-      trigger_error($this->error, ERROR);
       $this->db_hadnle = false;
       return false;
     }
@@ -82,7 +81,6 @@ class db_mysql
     if(!$res = mysql_query($sql, $this->db_hadnle))
     {
       $this->error = $sql.' '.mysql_error($this->db_hadnle).' '.mysql_errno($this->db_hadnle);
-      trigger_error($this->error, ERROR);
       return false;
     }
     return $res;
