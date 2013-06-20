@@ -76,6 +76,76 @@ Example:
   
   $q == false or 4;
   
+  query_insert[js]:
+  
+  var q = db.query_insert('INSERT INTO `users` (`fname,`lname`,`group`,`pass`) VALUES($,$,$,$)', ['Grag','Sher','1','123']);
+  
+  q == false or 4;
+  
+  
+  get_affected_rows[php]:
+  
+  $q = $db->get_affected_rows('UPDATE `users` SET `group`=$ WHERE group=$', array('1','0'));
+  
+  $q == false or 2;
+  
+  get_affected_rows[js]:
+  
+  var q = db.get_affected_rows('UPDATE `users` SET `group`=$ WHERE group=$', ['1','0']);
+  
+  q == false or 2;
+  
+  
+  get_value_query[php]:
+  
+  $q = $db->get_value_query('SELECT pass FROM `users` WHERE `id`=$', '1');
+  
+  $q == false or qwe;
+  
+  get_value_query[js]:
+  
+  var q = db.get_value_query('SELECT pass FROM `users` WHERE `id`=$', '1');
+  
+  q == false or qwe;
+  
+  
+  get_array_list[php]:
+  
+  $q = $db->get_array_list('SELECT `fname`, `lname`, `group` FROM `users`');
+  
+  $q == false or array(
+  
+    array('fname'=>'John', 'lname'=>'Smit', 'group'=>'0'),
+    
+    array('fname'=>'Tom', 'lname'=>'Bink', 'group'=>'1'),
+    
+    array('fname'=>'Mike', 'lname'=>'Depp', 'group'=>'1'),
+  
+  );
+  
+  get_array_list[js]:
+  
+  var q = db.get_array_list('SELECT `fname`, `lname`, `group` FROM `users`');
+  
+  q == false or [
+  
+    ['fname'=>'John', 'lname'=>'Smit', 'group'=>'0'],
+    
+    ['fname'=>'Tom', 'lname'=>'Bink', 'group'=>'1'],
+    
+    ['fname'=>'Mike', 'lname'=>'Depp', 'group'=>'1'],
+  
+  ];
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   
   
