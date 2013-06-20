@@ -1,6 +1,9 @@
+<?
+
 /*
 
   MySql db class
+  Author: Grigoriy Stratov
 
 
 */
@@ -202,3 +205,4 @@ class db_mysql
   }
 
 }
+?>
