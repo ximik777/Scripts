@@ -1,3 +1,5 @@
+<?
+
 /*
   SQLite db class
   Author: Grigoriy Stratov
@@ -138,3 +140,5 @@ class db_lite
   }
 
 }
+
+?>
