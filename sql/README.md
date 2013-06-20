@@ -45,13 +45,13 @@ Example:
 
   Example table `users`:
   
-  id | fnama | lname | group | pass | 
+  id | fnama | lname | group | login | pass | 
   
-  1  | John  | Smit  |   0   | qwe  |
+  1  | John  | Smit  |   0   | test1 | qwe  |
   
-  2  | Tom   | Bink  |   1   | ytr  |
+  2  | Tom   | Bink  |   1   | test2 | ytr  |
   
-  3  | Mike  | Depp  |   1   | odi  |
+  3  | Mike  | Depp  |   1   | test3 | odi  |
   
 
   Example query:
@@ -59,13 +59,13 @@ Example:
   query [php]:
   
   
-  $q = $db->query('UPDATE `users` SET pass=$ WHERE id=$', array($pass, $id));
+  $q = $db->query('UPDATE `users` SET `pass`=$ WHERE `id`=$', array($pass, $id));
   
   $q == false or true;
   
   query [js]:
   
-  var q = db.query('UPDATE `users` SET pass=$ WHERE id=$', [pass, id]);
+  var q = db.query('UPDATE `users` SET `pass`=$ WHERE `id`=$', [pass, id]);
   
   q == false or resource(true);
   
@@ -85,26 +85,26 @@ Example:
   
   get_affected_rows[php]:
   
-  $q = $db->get_affected_rows('UPDATE `users` SET `group`=$ WHERE group=$', array('1','0'));
+  $q = $db->get_affected_rows('UPDATE `users` SET `group`=$ WHERE `group`=$', array('1','0'));
   
   $q == false or 2;
   
   get_affected_rows[js]:
   
-  var q = db.get_affected_rows('UPDATE `users` SET `group`=$ WHERE group=$', ['1','0']);
+  var q = db.get_affected_rows('UPDATE `users` SET `group`=$ WHERE `group`=$', ['1','0']);
   
   q == false or 2;
   
   
   get_value_query[php]:
   
-  $q = $db->get_value_query('SELECT pass FROM `users` WHERE `id`=$', '1');
+  $q = $db->get_value_query('SELECT `pass` FROM `users` WHERE `id`=$', '1');
   
   $q == false or qwe;
   
   get_value_query[js]:
   
-  var q = db.get_value_query('SELECT pass FROM `users` WHERE `id`=$', '1');
+  var q = db.get_value_query('SELECT `pass` FROM `users` WHERE `id`=$', '1');
   
   q == false or qwe;
   
@@ -136,6 +136,38 @@ Example:
     ['fname'=>'Mike', 'lname'=>'Depp', 'group'=>'1'],
   
   ];
+  
+  
+  getKeyValArray[php]:
+  
+  $q = $db->getKeyValArray('SELECT `id`, `login` FROM `users`');
+  
+  $q == false or array(
+  
+    '1' => 'test1',
+    
+    '2' => 'test2',
+    
+    '3' => 'test3'
+  
+  );
+  
+  getKeyValArray[js]:
+  
+  var q = db.getKeyValArray('SELECT `id`, `login` FROM `users`');
+  
+  q == false or {
+  
+    '1' : 'test1',
+    
+    '2' : 'test2',
+    
+    '3' : 'test3'
+  
+  };
+  
+  
+  
   
   
   
