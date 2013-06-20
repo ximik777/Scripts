@@ -20,7 +20,8 @@ JavaScript:
 
 Methods:
 
-  query - return false or resource(true) \r\n
+  query - return false or resource(true) 
+  
   query_insert - return false or last inser id
   
   get_affected_rows - return false or affected rows
@@ -162,6 +163,47 @@ Example:
     '2' : 'test2',
     
     '3' : 'test3'
+  
+  };
+  
+  
+  get_one_line_assoc[php]:
+  
+  $q = $db->get_one_line_assoc('SELECT * FROM `users` WHERE id=$', '2');
+  
+  $q == false or array(
+  
+    'id' => '2',
+    
+    'fname' => 'Tom',
+    
+    'lname' => 'Bink',
+    
+    'group' => '1',
+    
+    'login' => 'test2',
+    
+    'pass' => 'ytr'
+  
+  );
+  
+  get_one_line_assoc[js]:
+  
+  var q = db.get_one_line_assoc('SELECT * FROM `users` WHERE id=$', '2');
+  
+  $q == false or {
+  
+    'id' : '2',
+    
+    'fname' : 'Tom',
+    
+    'lname' : 'Bink',
+    
+    'group' : '1',
+    
+    'login' : 'test2',
+    
+    'pass' : 'ytr'
   
   };
   
