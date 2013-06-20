@@ -1,13 +1,16 @@
   
 PHP:
 
-  MySql
+  MySql init class:
+  
   $db = new db_mysql('db_host', 'db_user', 'db_pass', 'db_name');
   
-  PgSql
+  PgSql init class:
+  
   $db = new db_pgsql('db_host', 'db_user', 'db_pass', 'db_name');
 
-  Sqlite
+  Sqlite init class:
+  
   $db = new db_lite('db_name');
   
 JavaScript:
@@ -38,3 +41,15 @@ Methods:
   
 
 Example:
+
+
+  Example table:
+  
+  id | fnama | lname | group | pass | 
+  
+  1  | John  | Smit  |   0   | qwe  |
+  
+  2  | Tom   | Bink  |   1   | ytr  |
+  
+  3  | Mike  | Depp  |   1   | odi  |
+  
