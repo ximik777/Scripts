@@ -20,8 +20,7 @@ JavaScript:
 
 Methods:
 
-  query - return false or resource(true)
-  
+  query - return false or resource(true) \r\n
   query_insert - return false or last inser id
   
   get_affected_rows - return false or affected rows
