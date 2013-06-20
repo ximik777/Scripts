@@ -20,7 +20,7 @@ JavaScript:
 
 Methods:
 
-  query - return false or true
+  query - return false or resource(true)
   
   query_insert - return false or last inser id
   
@@ -43,7 +43,7 @@ Methods:
 Example:
 
 
-  Example table:
+  Example table `users`:
   
   id | fnama | lname | group | pass | 
   
@@ -53,3 +53,30 @@ Example:
   
   3  | Mike  | Depp  |   1   | odi  |
   
+
+  Example query:
+  
+  query [php]:
+  
+  
+  $q = $db->query('UPDATE `users` SET pass=$ WHERE id=$', array($pass, $id));
+  
+  $q == false or true;
+  
+  query [js]:
+  
+  var q = db.query('UPDATE `users` SET pass=$ WHERE id=$', [pass, id]);
+  
+  q == false or resource(true);
+  
+  
+  query_insert[php]:
+  
+  $q = $db->query_insert('INSERT INTO `users` (`fname,`lname`,`group`,`pass`) VALUES($,$,$,$)', array('Grag','Sher','1','123'));
+  
+  $q == false or 4;
+  
+  
+  
+  
+
