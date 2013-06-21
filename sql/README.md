@@ -72,7 +72,7 @@ Example query:<br />
 <b>query [php]:</b><br /><br />
 
 <pre><code>
-$q = $db->query('UPDATE `users` SET `pass`=$ WHERE `id`=$', array($pass, $id));<br />
+$q = $db->query('UPDATE `users` SET `pass`=$ WHERE `id`=$', array($pass, $id));
 $q == false or resource(true);
 </code></pre>
 <br />
@@ -80,82 +80,82 @@ $q == false or resource(true);
 <b>query [js]:</b><br /><br />
 
 <pre><code>
-var q = db.query('UPDATE `users` SET `pass`=$ WHERE `id`=$', [pass, id]);<br />
+var q = db.query('UPDATE `users` SET `pass`=$ WHERE `id`=$', [pass, id]);
 q == false or true;
 </code></pre>
 <br />
 
 <b>query_insert[php]:</b><br /><br />
 <pre><code>
-$q = $db->query_insert('INSERT INTO `users` (`fname`,`lname`,`group`,`pass`) VALUES($,$,$,$)', array('Grag','Sher','1','123'));<br />
+$q = $db->query_insert('INSERT INTO `users` (`fname`,`lname`,`group`,`pass`) VALUES($,$,$,$)', array('Grag','Sher','1','123'));
 $q == false or 4;
 </code></pre>
 <br />
 
 <b>query_insert[js]:</b><br /><br />
 <pre><code>
-var q = db.query_insert('INSERT INTO `users` (`fname`,`lname`,`group`,`pass`) VALUES($,$,$,$)', ['Grag','Sher','1','123']);<br />
+var q = db.query_insert('INSERT INTO `users` (`fname`,`lname`,`group`,`pass`) VALUES($,$,$,$)', ['Grag','Sher','1','123']);
 q == false or 4;
 </code></pre>
 <br />
 
 <b>get_affected_rows[php]:</b><br /><br />
 <pre><code>
-$q = $db->get_affected_rows('UPDATE `users` SET `group`=$ WHERE `group`=$', array('1','0'));<br />
+$q = $db->get_affected_rows('UPDATE `users` SET `group`=$ WHERE `group`=$', array('1','0'));
 $q == false or 2;
 </code></pre>
 <br />
 
 <b>get_affected_rows[js]:</b><br /><br />
 <pre><code>
-var q = db.get_affected_rows('UPDATE `users` SET `group`=$ WHERE `group`=$', ['1','0']);<br />
+var q = db.get_affected_rows('UPDATE `users` SET `group`=$ WHERE `group`=$', ['1','0']);
 q == false or 2;
 </code></pre>
 <br />
 
 <b>get_value_query[php]:</b><br /><br />
 <pre><code>
-$q = $db->get_value_query('SELECT `pass` FROM `users` WHERE `id`=$', '1');<br />
+$q = $db->get_value_query('SELECT `pass` FROM `users` WHERE `id`=$', '1');
 $q == false or qwe;
 </code></pre>
 
 <br />
 <b>get_value_query[js]:</b><br /><br />
 <pre><code>
-var q = db.get_value_query('SELECT `pass` FROM `users` WHERE `id`=$', '1');<br />
+var q = db.get_value_query('SELECT `pass` FROM `users` WHERE `id`=$', '1');
 q == false or qwe;
 </code></pre>
 <br />
 
 <b>get_array_list[php]:</b><br /><br />
 <pre><code>
-$q = $db->get_array_list('SELECT `fname`, `lname`, `group` FROM `users`');<br />
-$q == false or array(<br />
-array('fname'=>'John', 'lname'=>'Smit', 'group'=>'0'),<br />
-array('fname'=>'Tom', 'lname'=>'Bink', 'group'=>'1'),<br />
-array('fname'=>'Mike', 'lname'=>'Depp', 'group'=>'1')<br />
+$q = $db->get_array_list('SELECT `fname`, `lname`, `group` FROM `users`');
+$q == false or array(
+array('fname'=>'John', 'lname'=>'Smit', 'group'=>'0'),
+array('fname'=>'Tom', 'lname'=>'Bink', 'group'=>'1'),
+array('fname'=>'Mike', 'lname'=>'Depp', 'group'=>'1')
 );
 </code></pre>
 
 <br />
 <b>get_array_list[js]:</b><br /><br />
 <pre><code>
-var q = db.get_array_list('SELECT `fname`, `lname`, `grou` FROM `users`');<br />
-q == false or [<br />
-['fname'=>'John', 'lname'=>'Smit', 'group'=>'0'],<br />
-['fname'=>'Tom', 'lname'=>'Bink', 'group'=>'1'],<br />
-['fname'=>'Mike', 'lname'=>'Depp', 'group'=>'1']<br />
+var q = db.get_array_list('SELECT `fname`, `lname`, `grou` FROM `users`');
+q == false or [
+['fname'=>'John', 'lname'=>'Smit', 'group'=>'0'],
+['fname'=>'Tom', 'lname'=>'Bink', 'group'=>'1'],
+['fname'=>'Mike', 'lname'=>'Depp', 'group'=>'1']
 ];
 </code></pre>
 
 <br />
 <b>getKeyValArray[php]:</b><br /><br />
 <pre><code>
-$q = $db->getKeyValArray('SELECT `id`, `login` FROM `users`');<br />
-$q == false or array(<br />
-'1' => 'test1',<br />
-'2' => 'test2',<br />
-'3' => 'test3'<br />
+$q = $db->getKeyValArray('SELECT `id`, `login` FROM `users`');
+$q == false or array(
+'1' => 'test1',
+'2' => 'test2',
+'3' => 'test3'
 );
 </code></pre>
 <br />
@@ -163,37 +163,37 @@ $q == false or array(<br />
 <b>getKeyValArray[js]:</b><br />
 <br />
 <pre><code>
-var q = db.getKeyValArray('SELECT `id`, `login` FROM `users`');<br />
-q == false or {<br />
-'1' : 'test1',<br />
-'2' : 'test2',<br />
-'3' : 'test3'<br />
+var q = db.getKeyValArray('SELECT `id`, `login` FROM `users`');
+q == false or {
+'1' : 'test1',
+'2' : 'test2',
+'3' : 'test3'
 };
 </code></pre>
 <br />
 <b>get_one_line_assoc[php]:</b><br /><br />
 <pre><code>
-$q = $db->get_one_line_assoc('SELECT * FROM `users` WHERE `id`=$', '2');<br />
-$q == false or array(<br />
-'id' => '2',<br />
-'fname' => 'Tom',<br />
-'lname' => 'Bink',<br />
-'group' => '1',<br />
-'login' => 'test2',<br />
-'pass' => 'ytr'<br />
+$q = $db->get_one_line_assoc('SELECT * FROM `users` WHERE `id`=$', '2');
+$q == false or array(
+'id' => '2',
+'fname' => 'Tom',
+'lname' => 'Bink',
+'group' => '1',
+'login' => 'test2',
+'pass' => 'ytr'
 );
 </code></pre>
 <br />
 <b>get_one_line_assoc[js]:</b><br />
 <br />
 <pre><code>
-var q = db.get_one_line_assoc('SELECT * FROM `users` WHERE `id`=$', '2');<br />
-$q == false or {<br />
-'id' : '2',<br />
-'fname' : 'Tom',<br />
-'lname' : 'Bink',<br />
-'group' : '1',<br />
-'login' : 'test2',<br />
-'pass' : 'ytr'<br />
+var q = db.get_one_line_assoc('SELECT * FROM `users` WHERE `id`=$', '2');
+$q == false or {
+'id' : '2',
+'fname' : 'Tom',
+'lname' : 'Bink',
+'group' : '1',
+'login' : 'test2',
+'pass' : 'ytr'
 };
 </code></pre>
