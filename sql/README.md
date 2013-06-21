@@ -204,8 +204,8 @@ q == false or {
 $q = $db->get_assoc_column('SELECT `login` FROM `users`');
 $q == false or array(
   'test1',
-	'test2',
-	'test3'
+  'test2',
+  'test3'
 );
 </code></pre>
 <br />
@@ -215,8 +215,8 @@ $q == false or array(
 var q = db.get_assoc_column('SELECT `login` FROM `users`');
 q == false or [
   'test1',
-	'test2',
-	'test3'
+  'test2',
+  'test3'
 ];
 </code></pre>
 
