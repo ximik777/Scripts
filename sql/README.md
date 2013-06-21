@@ -69,7 +69,7 @@ Example table users:<br />
 Example query:<br />
 <br />
 
-<b>query [php]:</b><br /><br />
+<b>query [php]:</b><br />
 
 <pre><code>
 $q = $db->query('UPDATE `users` SET `pass`=$ WHERE `id`=$', array($pass, $id));
@@ -77,7 +77,7 @@ $q == false or resource(true);
 </code></pre>
 <br />
 
-<b>query [js]:</b><br /><br />
+<b>query [js]:</b><br />
 
 <pre><code>
 var q = db.query('UPDATE `users` SET `pass`=$ WHERE `id`=$', [pass, id]);
@@ -85,49 +85,49 @@ q == false or true;
 </code></pre>
 <br />
 
-<b>query_insert[php]:</b><br /><br />
+<b>query_insert[php]:</b><br />
 <pre><code>
 $q = $db->query_insert('INSERT INTO `users` (`fname`,`lname`,`group`,`pass`) VALUES($,$,$,$)', array('Grag','Sher','1','123'));
 $q == false or 4;
 </code></pre>
 <br />
 
-<b>query_insert[js]:</b><br /><br />
+<b>query_insert[js]:</b><br />
 <pre><code>
 var q = db.query_insert('INSERT INTO `users` (`fname`,`lname`,`group`,`pass`) VALUES($,$,$,$)', ['Grag','Sher','1','123']);
 q == false or 4;
 </code></pre>
 <br />
 
-<b>get_affected_rows[php]:</b><br /><br />
+<b>get_affected_rows[php]:</b><br />
 <pre><code>
 $q = $db->get_affected_rows('UPDATE `users` SET `group`=$ WHERE `group`=$', array('1','0'));
 $q == false or 2;
 </code></pre>
 <br />
 
-<b>get_affected_rows[js]:</b><br /><br />
+<b>get_affected_rows[js]:</b><br />
 <pre><code>
 var q = db.get_affected_rows('UPDATE `users` SET `group`=$ WHERE `group`=$', ['1','0']);
 q == false or 2;
 </code></pre>
 <br />
 
-<b>get_value_query[php]:</b><br /><br />
+<b>get_value_query[php]:</b><br />
 <pre><code>
 $q = $db->get_value_query('SELECT `pass` FROM `users` WHERE `id`=$', '1');
 $q == false or qwe;
 </code></pre>
 
 <br />
-<b>get_value_query[js]:</b><br /><br />
+<b>get_value_query[js]:</b><br />
 <pre><code>
 var q = db.get_value_query('SELECT `pass` FROM `users` WHERE `id`=$', '1');
 q == false or qwe;
 </code></pre>
 <br />
 
-<b>get_array_list[php]:</b><br /><br />
+<b>get_array_list[php]:</b><br />
 <pre><code>
 $q = $db->get_array_list('SELECT `fname`, `lname`, `group` FROM `users`');
 $q == false or array(
@@ -138,7 +138,7 @@ $q == false or array(
 </code></pre>
 
 <br />
-<b>get_array_list[js]:</b><br /><br />
+<b>get_array_list[js]:</b><br />
 <pre><code>
 var q = db.get_array_list('SELECT `fname`, `lname`, `grou` FROM `users`');
 q == false or [
@@ -149,7 +149,7 @@ q == false or [
 </code></pre>
 
 <br />
-<b>getKeyValArray[php]:</b><br /><br />
+<b>getKeyValArray[php]:</b><br />
 <pre><code>
 $q = $db->getKeyValArray('SELECT `id`, `login` FROM `users`');
 $q == false or array(
@@ -171,7 +171,7 @@ q == false or {
 };
 </code></pre>
 <br />
-<b>get_one_line_assoc[php]:</b><br /><br />
+<b>get_one_line_assoc[php]:</b><br />
 <pre><code>
 $q = $db->get_one_line_assoc('SELECT * FROM `users` WHERE `id`=$', '2');
 $q == false or array(
@@ -185,7 +185,6 @@ $q == false or array(
 </code></pre>
 <br />
 <b>get_one_line_assoc[js]:</b><br />
-<br />
 <pre><code>
 var q = db.get_one_line_assoc('SELECT * FROM `users` WHERE `id`=$', '2');
 q == false or {
@@ -199,7 +198,7 @@ q == false or {
 </code></pre>
 
 <br />
-<b>get_assoc_column[php]:</b><br /><br />
+<b>get_assoc_column[php]:</b><br />
 <pre><code>
 $q = $db->get_assoc_column('SELECT `login` FROM `users`');
 $q == false or array(
@@ -210,18 +209,17 @@ $q == false or array(
 </code></pre>
 <br />
 <b>get_assoc_column[js]:</b><br />
-<br />
 <pre><code>
 var q = db.get_assoc_column('SELECT `login` FROM `users`');
 q == false or [
-  'test1',
+	'test1',
   'test2',
   'test3'
 ];
 </code></pre>
 
 <br />
-<b>get_assoc_column1[php]:</b><br /><br />
+<b>get_assoc_column1[php]:</b><br />
 key array first value
 <pre><code>
 $q = $db->get_assoc_column1('SELECT * FROM `users`');
@@ -233,7 +231,6 @@ $q == false or array(
 </code></pre>
 <br />
 <b>get_assoc_column1[js]:</b><br />
-<br />
 key object first value
 <pre><code>
 var q = db.get_assoc_column1('SELECT * FROM `users`');
