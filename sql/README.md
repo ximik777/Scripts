@@ -66,6 +66,7 @@ Example table users:<br />
   </tr>
 </table>
 <br />
+<p><code>
 Example query:<br />
 <br />
 query [php]:<br />
@@ -77,6 +78,7 @@ query [js]:<br />
 <br />
 var q = db.query('UPDATE `users` SET `pass`=$ WHERE `id`=$', [pass, id]);<br />
 q == false or resource(true);<br />
+</code></p>
 <br />
 query_insert[php]:<br />
 <br />
