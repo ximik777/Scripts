@@ -1,8 +1,8 @@
 /*
 
   MySql, PgSql db class for Yate.
-	Author: Grigoriy Stratov 
-
+  Author: Grigoriy Stratov 
+	Docs: https://github.com/ximik777/Scripts/blob/master/sql/README.md
 
 */
 
