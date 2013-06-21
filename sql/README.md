@@ -70,47 +70,47 @@ Example query:<br />
 <br />
 query [php]:<br />
 <br />
-$q = $db->query('UPDATE users SET pass=$ WHERE id=$', array($pass, $id));<br />
+$q = $db->query('UPDATE `users` SET `pass`=$ WHERE `id`=$', array($pass, $id));<br />
 $q == false or true;<br />
 <br />
 query [js]:<br />
 <br />
-var q = db.query('UPDATE users SET pass=$ WHERE id=$', [pass, id]);<br />
+var q = db.query('UPDATE `users` SET `pass`=$ WHERE `id`=$', [pass, id]);<br />
 q == false or resource(true);<br />
 <br />
 query_insert[php]:<br />
 <br />
-$q = $db->query_insert('INSERT INTO users (fname,lname,group,pass`) VALUES($,$,$,$)', array('Grag','Sher','1','123'));<br />
+$q = $db->query_insert('INSERT INTO `users` (`fname`,`lname`,`group`,`pass`) VALUES($,$,$,$)', array('Grag','Sher','1','123'));<br />
 $q == false or 4;<br />
 <br />
 query_insert[js]:<br />
 <br />
-var q = db.query_insert('INSERT INTO users (fname,lname,group,pass`) VALUES($,$,$,$)', ['Grag','Sher','1','123']);<br />
+var q = db.query_insert('INSERT INTO `users` (`fname`,`lname`,`group`,`pass`) VALUES($,$,$,$)', ['Grag','Sher','1','123']);<br />
 q == false or 4;<br />
 <br />
 get_affected_rows[php]:<br />
 <br />
-$q = $db->get_affected_rows('UPDATE users SET group=$ WHERE group=$', array('1','0'));<br />
+$q = $db->get_affected_rows('UPDATE `users` SET `group`=$ WHERE `group`=$', array('1','0'));<br />
 $q == false or 2;<br />
 <br />
 get_affected_rows[js]:<br />
 <br />
-var q = db.get_affected_rows('UPDATE users SET group=$ WHERE group=$', ['1','0']);<br />
+var q = db.get_affected_rows('UPDATE `users` SET `group`=$ WHERE `group`=$', ['1','0']);<br />
 q == false or 2;<br />
 <br />
 get_value_query[php]:<br />
 <br />
-$q = $db->get_value_query('SELECT pass FROM users WHERE id=$', '1');<br />
+$q = $db->get_value_query('SELECT `pass` FROM `users` WHERE `id`=$', '1');<br />
 $q == false or qwe;<br />
 <br />
 get_value_query[js]:<br />
 <br />
-var q = db.get_value_query('SELECT pass FROM users WHERE id=$', '1');<br />
+var q = db.get_value_query('SELECT `pass` FROM `users` WHERE `id`=$', '1');<br />
 q == false or qwe;<br />
 <br />
 get_array_list[php]:<br />
 <br />
-$q = $db->get_array_list('SELECT fname, lname, group FROM users');<br />
+$q = $db->get_array_list('SELECT `fname`, `lname`, `group` FROM `users`');<br />
 $q == false or array(<br />
 array('fname'=>'John', 'lname'=>'Smit', 'group'=>'0'),<br />
 array('fname'=>'Tom', 'lname'=>'Bink', 'group'=>'1'),<br />
@@ -119,7 +119,7 @@ array('fname'=>'Mike', 'lname'=>'Depp', 'group'=>'1')<br />
 <br />
 get_array_list[js]:<br />
 <br />
-var q = db.get_array_list('SELECT fname, lname, group FROM users');<br />
+var q = db.get_array_list('SELECT `fname`, `lname`, `grou` FROM `users`');<br />
 q == false or [<br />
 ['fname'=>'John', 'lname'=>'Smit', 'group'=>'0'],<br />
 ['fname'=>'Tom', 'lname'=>'Bink', 'group'=>'1'],<br />
@@ -128,7 +128,7 @@ q == false or [<br />
 <br />
 getKeyValArray[php]:<br />
 <br />
-$q = $db->getKeyValArray('SELECT id, login FROM users');<br />
+$q = $db->getKeyValArray('SELECT `id`, `login` FROM `users`');<br />
 $q == false or array(<br />
 '1' => 'test1',<br />
 '2' => 'test2',<br />
@@ -137,7 +137,7 @@ $q == false or array(<br />
 <br />
 getKeyValArray[js]:<br />
 <br />
-var q = db.getKeyValArray('SELECT id, login FROM users');<br />
+var q = db.getKeyValArray('SELECT `id`, `login` FROM `users`');<br />
 q == false or {<br />
 '1' : 'test1',<br />
 '2' : 'test2',<br />
@@ -146,7 +146,7 @@ q == false or {<br />
 <br />
 get_one_line_assoc[php]:<br />
 <br />
-$q = $db->get_one_line_assoc('SELECT * FROM users WHERE id=$', '2');<br />
+$q = $db->get_one_line_assoc('SELECT * FROM `users` WHERE `id`=$', '2');<br />
 $q == false or array(<br />
 'id' => '2',<br />
 'fname' => 'Tom',<br />
@@ -158,7 +158,7 @@ $q == false or array(<br />
 <br />
 get_one_line_assoc[js]:<br />
 <br />
-var q = db.get_one_line_assoc('SELECT * FROM users WHERE id=$', '2');<br />
+var q = db.get_one_line_assoc('SELECT * FROM `users` WHERE `id`=$', '2');<br />
 $q == false or {<br />
 'id' : '2',<br />
 'fname' : 'Tom',<br />
