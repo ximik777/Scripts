@@ -131,9 +131,9 @@ q == false or qwe;
 <pre><code>
 $q = $db->get_array_list('SELECT `fname`, `lname`, `group` FROM `users`');
 $q == false or array(
-array('fname'=>'John', 'lname'=>'Smit', 'group'=>'0'),
-array('fname'=>'Tom', 'lname'=>'Bink', 'group'=>'1'),
-array('fname'=>'Mike', 'lname'=>'Depp', 'group'=>'1')
+  array('fname'=>'John', 'lname'=>'Smit', 'group'=>'0'),
+  array('fname'=>'Tom', 'lname'=>'Bink', 'group'=>'1'),
+  array('fname'=>'Mike', 'lname'=>'Depp', 'group'=>'1')
 );
 </code></pre>
 
@@ -142,9 +142,9 @@ array('fname'=>'Mike', 'lname'=>'Depp', 'group'=>'1')
 <pre><code>
 var q = db.get_array_list('SELECT `fname`, `lname`, `grou` FROM `users`');
 q == false or [
-['fname'=>'John', 'lname'=>'Smit', 'group'=>'0'],
-['fname'=>'Tom', 'lname'=>'Bink', 'group'=>'1'],
-['fname'=>'Mike', 'lname'=>'Depp', 'group'=>'1']
+  ['fname'=>'John', 'lname'=>'Smit', 'group'=>'0'],
+  ['fname'=>'Tom', 'lname'=>'Bink', 'group'=>'1'],
+  ['fname'=>'Mike', 'lname'=>'Depp', 'group'=>'1']
 ];
 </code></pre>
 
@@ -153,9 +153,9 @@ q == false or [
 <pre><code>
 $q = $db->getKeyValArray('SELECT `id`, `login` FROM `users`');
 $q == false or array(
-'1' => 'test1',
-'2' => 'test2',
-'3' => 'test3'
+  '1' => 'test1',
+  '2' => 'test2',
+  '3' => 'test3'
 );
 </code></pre>
 <br />
@@ -165,9 +165,9 @@ $q == false or array(
 <pre><code>
 var q = db.getKeyValArray('SELECT `id`, `login` FROM `users`');
 q == false or {
-'1' : 'test1',
-'2' : 'test2',
-'3' : 'test3'
+  '1' : 'test1',
+  '2' : 'test2',
+  '3' : 'test3'
 };
 </code></pre>
 <br />
@@ -175,12 +175,12 @@ q == false or {
 <pre><code>
 $q = $db->get_one_line_assoc('SELECT * FROM `users` WHERE `id`=$', '2');
 $q == false or array(
-'id' => '2',
-'fname' => 'Tom',
-'lname' => 'Bink',
-'group' => '1',
-'login' => 'test2',
-'pass' => 'ytr'
+  'id' => '2',
+  'fname' => 'Tom',
+  'lname' => 'Bink',
+  'group' => '1',
+  'login' => 'test2',
+  'pass' => 'ytr'
 );
 </code></pre>
 <br />
@@ -188,12 +188,58 @@ $q == false or array(
 <br />
 <pre><code>
 var q = db.get_one_line_assoc('SELECT * FROM `users` WHERE `id`=$', '2');
-$q == false or {
-'id' : '2',
-'fname' : 'Tom',
-'lname' : 'Bink',
-'group' : '1',
-'login' : 'test2',
-'pass' : 'ytr'
+q == false or {
+  'id' : '2',
+  'fname' : 'Tom',
+  'lname' : 'Bink',
+  'group' : '1',
+  'login' : 'test2',
+  'pass' : 'ytr'
+};
+</code></pre>
+
+<br />
+<b>get_assoc_column[php]:</b><br /><br />
+<pre><code>
+$q = $db->get_assoc_column('SELECT `login` FROM `users`');
+$q == false or array(
+  'test1',
+	'test2',
+	'test3'
+);
+</code></pre>
+<br />
+<b>get_assoc_column[js]:</b><br />
+<br />
+<pre><code>
+var q = db.get_assoc_column('SELECT `login` FROM `users`');
+q == false or [
+  'test1',
+	'test2',
+	'test3'
+];
+</code></pre>
+
+<br />
+<b>get_assoc_column1[php]:</b><br /><br />
+key array first value
+<pre><code>
+$q = $db->get_assoc_column1('SELECT * FROM `users`');
+$q == false or array(
+  '1' => array('fname'=>'John', 'lname'=>'Smit', 'group'=>'0', 'login'=>'test1', 'pass'=>'qwe'),
+  '2' => array('fname'=>'Tom', 'lname'=>'Bink', 'group'=>'1', 'login'=>'test2', 'pass'=>'ytr'),
+  '3' => array('fname'=>'Mike', 'lname'=>'Depp', 'group'=>'1', 'login'=>'test3', 'pass'=>'odi')
+);
+</code></pre>
+<br />
+<b>get_assoc_column1[js]:</b><br />
+<br />
+key object first value
+<pre><code>
+var q = db.get_assoc_column1('SELECT * FROM `users`');
+q == false or {
+  '1' : {'fname':'John', 'lname':'Smit', 'group':'0', 'login':'test1', 'pass':'qwe'},
+  '2' : {'fname':'Tom', 'lname':'Bink', 'group':'1', 'login':'test2', 'pass':'ytr'},
+  '3' : {'fname':'Mike', 'lname':'Depp', 'group':'1', 'login':'test3', 'pass':'odi'}
 };
 </code></pre>
