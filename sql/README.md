@@ -68,88 +68,111 @@ Example table users:<br />
 <br />
 Example query:<br />
 <br />
-<b>query [php]:</b><br />
-<br />
+
+<b>query [php]:</b><br /><br />
+
 <pre><code>
 $q = $db->query('UPDATE `users` SET `pass`=$ WHERE `id`=$', array($pass, $id));<br />
-$q == false or true;<br />
+$q == false or resource(true);
 </code></pre>
 <br />
-<b>query [js]:</b><br />
-<br />
+
+<b>query [js]:</b><br /><br />
+
 <pre><code>
 var q = db.query('UPDATE `users` SET `pass`=$ WHERE `id`=$', [pass, id]);<br />
-q == false or resource(true);<br />
+q == false or true;
 </code></pre>
 <br />
-query_insert[php]:<br />
-<br />
+
+<b>query_insert[php]:</b><br /><br />
+<pre><code>
 $q = $db->query_insert('INSERT INTO `users` (`fname`,`lname`,`group`,`pass`) VALUES($,$,$,$)', array('Grag','Sher','1','123'));<br />
-$q == false or 4;<br />
+$q == false or 4;
+</code></pre>
 <br />
-query_insert[js]:<br />
-<br />
+
+<b>query_insert[js]:</b><br /><br />
+<pre><code>
 var q = db.query_insert('INSERT INTO `users` (`fname`,`lname`,`group`,`pass`) VALUES($,$,$,$)', ['Grag','Sher','1','123']);<br />
-q == false or 4;<br />
+q == false or 4;
+</code></pre>
 <br />
-get_affected_rows[php]:<br />
-<br />
+
+<b>get_affected_rows[php]:</b><br /><br />
+<pre><code>
 $q = $db->get_affected_rows('UPDATE `users` SET `group`=$ WHERE `group`=$', array('1','0'));<br />
-$q == false or 2;<br />
+$q == false or 2;
+</code></pre>
 <br />
-get_affected_rows[js]:<br />
-<br />
+
+<b>get_affected_rows[js]:</b><br /><br />
+<pre><code>
 var q = db.get_affected_rows('UPDATE `users` SET `group`=$ WHERE `group`=$', ['1','0']);<br />
-q == false or 2;<br />
+q == false or 2;
+</code></pre>
 <br />
-get_value_query[php]:<br />
-<br />
+
+<b>get_value_query[php]:</b><br /><br />
+<pre><code>
 $q = $db->get_value_query('SELECT `pass` FROM `users` WHERE `id`=$', '1');<br />
-$q == false or qwe;<br />
+$q == false or qwe;
+</code></pre>
+
 <br />
-get_value_query[js]:<br />
-<br />
+<b>get_value_query[js]:</b><br /><br />
+<pre><code>
 var q = db.get_value_query('SELECT `pass` FROM `users` WHERE `id`=$', '1');<br />
-q == false or qwe;<br />
+q == false or qwe;
+</code></pre>
 <br />
-get_array_list[php]:<br />
-<br />
+
+<b>get_array_list[php]:</b><br /><br />
+<pre><code>
 $q = $db->get_array_list('SELECT `fname`, `lname`, `group` FROM `users`');<br />
 $q == false or array(<br />
 array('fname'=>'John', 'lname'=>'Smit', 'group'=>'0'),<br />
 array('fname'=>'Tom', 'lname'=>'Bink', 'group'=>'1'),<br />
 array('fname'=>'Mike', 'lname'=>'Depp', 'group'=>'1')<br />
-);<br />
+);
+</code></pre>
+
 <br />
-get_array_list[js]:<br />
-<br />
+<b>get_array_list[js]:</b><br /><br />
+<pre><code>
 var q = db.get_array_list('SELECT `fname`, `lname`, `grou` FROM `users`');<br />
 q == false or [<br />
 ['fname'=>'John', 'lname'=>'Smit', 'group'=>'0'],<br />
 ['fname'=>'Tom', 'lname'=>'Bink', 'group'=>'1'],<br />
 ['fname'=>'Mike', 'lname'=>'Depp', 'group'=>'1']<br />
-];<br />
+];
+</code></pre>
+
 <br />
-getKeyValArray[php]:<br />
-<br />
+<b>getKeyValArray[php]:</b><br /><br />
+<pre><code>
 $q = $db->getKeyValArray('SELECT `id`, `login` FROM `users`');<br />
 $q == false or array(<br />
 '1' => 'test1',<br />
 '2' => 'test2',<br />
 '3' => 'test3'<br />
-);<br />
+);
+</code></pre>
 <br />
-getKeyValArray[js]:<br />
+
+<b>getKeyValArray[js]:</b><br />
 <br />
+<pre><code>
 var q = db.getKeyValArray('SELECT `id`, `login` FROM `users`');<br />
 q == false or {<br />
 '1' : 'test1',<br />
 '2' : 'test2',<br />
 '3' : 'test3'<br />
-};<br />
+};
+</code></pre>
 <br />
-get_one_line_assoc[php]:<br />
-<br />
+<b>get_one_line_assoc[php]:</b><br /><br />
+<pre><code>
 $q = $db->get_one_line_assoc('SELECT * FROM `users` WHERE `id`=$', '2');<br />
 $q == false or array(<br />
 'id' => '2',<br />
@@ -158,10 +181,12 @@ $q == false or array(<br />
 'group' => '1',<br />
 'login' => 'test2',<br />
 'pass' => 'ytr'<br />
-);<br />
+);
+</code></pre>
 <br />
-get_one_line_assoc[js]:<br />
+<b>get_one_line_assoc[js]:</b><br />
 <br />
+<pre><code>
 var q = db.get_one_line_assoc('SELECT * FROM `users` WHERE `id`=$', '2');<br />
 $q == false or {<br />
 'id' : '2',<br />
@@ -170,4 +195,5 @@ $q == false or {<br />
 'group' : '1',<br />
 'login' : 'test2',<br />
 'pass' : 'ytr'<br />
-};<br />
+};
+</code></pre>
