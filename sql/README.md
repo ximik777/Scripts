@@ -66,19 +66,21 @@ Example table users:<br />
   </tr>
 </table>
 <br />
-<p><code>
 Example query:<br />
 <br />
-query [php]:<br />
+<b>query [php]:</b><br />
 <br />
+<pre><code>
 $q = $db->query('UPDATE `users` SET `pass`=$ WHERE `id`=$', array($pass, $id));<br />
 $q == false or true;<br />
+</code></pre>
 <br />
-query [js]:<br />
+<b>query [js]:</b><br />
 <br />
+<pre><code>
 var q = db.query('UPDATE `users` SET `pass`=$ WHERE `id`=$', [pass, id]);<br />
 q == false or resource(true);<br />
-</code></p>
+</code></pre>
 <br />
 query_insert[php]:<br />
 <br />
