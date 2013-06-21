@@ -3,6 +3,7 @@
 /*
   SQLite db class
   Author: Grigoriy Stratov
+  Docs: https://github.com/ximik777/Scripts/blob/master/sql/README.md
 */
 
 class db_lite
