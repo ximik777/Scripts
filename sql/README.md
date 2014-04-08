@@ -10,7 +10,8 @@ Sqlite init class:<br />
 $db = new db_lite('db_name');<br />
 <br />
 JavaScript:<br />
-MySql, PgSql class for Yate No init.<br />
+var db = new db_client('yate_my', 'mysql'); // or<br /> 
+var db = new db_client('yate_pg', 'pgsql');
 <br />
 Methods:<br />
 <br />
