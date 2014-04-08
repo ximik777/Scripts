@@ -12,7 +12,7 @@ class db_pgsql
 	var $sql; 
 	var $error;
 	
-	function db_client($db_host = '', $db_name = '', $db_user = '', $db_pass = '') 
+	function __construct($db_host = '', $db_name = '', $db_user = '', $db_pass = '') 
 	{
 		if(!$this->db_hadnle = pg_connect('host='.$db_host.' dbname='.$db_name.' user='.$db_user.' password='.$db_pass)) 
 		{ 
