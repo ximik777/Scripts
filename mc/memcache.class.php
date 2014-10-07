@@ -1,4 +1,5 @@
 <?
+// v1.0.0
 class mc_client {
     
     var $memcache;
