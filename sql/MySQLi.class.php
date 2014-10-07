@@ -35,7 +35,7 @@ class mysqli_client {
         }
 
         if($this->config['charset'] !== false){
-            $this->db_handle->query("SET NAMES '" . $this->config['charset'] . "';");
+            $this->db_handle->query("SET NAMES {$this->config['charset']}");
         }
         return true;
     }
