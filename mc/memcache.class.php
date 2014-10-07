@@ -1,6 +1,6 @@
-<? 
-class mc_client
-{
+<?
+class mc_client {
+    
     var $memcache;
     var $prefix = '';
     var $compress = false;
@@ -11,13 +11,15 @@ class mc_client
         'port' => 11211,
         'compress' => false,
         'prefix' => '',
-        'time_life' => 0
+        'time_life' => 0,
+        'persistent' => false
     );
 
     function __construct($config = array()){
         $this->config   = array_merge($this->config, $config);
         $this->memcache = new Memcache;
-        if (!$this->memcache->connect($this->config['host'], $this->config['port'])) {
+        $connect = $this->config['persistent'] ? $this->memcache->pconnect($this->config['host'], $this->config['port']) : $this->memcache->connect($this->config['host'], $this->config['port']);
+        if (!$connect) {
             $this->memcache = false;
             return false;
         }
@@ -27,9 +29,7 @@ class mc_client
     }
 
     protected function val($val){
-        if (!$this->config['compress'])
-            return $val;
-        $this->compress = is_bool($val) || is_int($val) || is_float($val) ? false : MEMCACHE_COMPRESSED;
+        $this->compress = !$this->config['compress'] ? false : is_bool($val) || is_int($val) || is_float($val) ? false : MEMCACHE_COMPRESSED;
         return $val;
     }
 
@@ -45,8 +45,20 @@ class mc_client
         return $this->memcache->add($this->prefix . $key, $this->val($val), $this->compress, $time ? $time : $this->time_life);
     }
 
+    public function replace($key, $val, $time = false){
+        return $this->memcache->replace($this->prefix . $key, $this->val($val), $this->compress, $time ? $time : $this->time_life);
+    }
+
     public function del($key){
         return $this->memcache->delete($this->prefix . $key);
+    }
+
+    public function increment($key, $val = 1){
+        return $this->memcache->increment($this->prefix . $key, abs(intval($val)));
+    }
+
+    public function decrement($key, $val = 1){
+        return $this->memcache->decrement($this->prefix . $key, abs(intval($val)));
     }
 
     public function flush(){
@@ -71,11 +83,4 @@ class mc_client
         $this->memcache->close();
     }
 
-    public function increment($key, $val = 1, $time = false){
-        return $this->memcache->increment($this->prefix . $key, $val, false, $time ? $time : $this->time_life);
-    }
-
-    public function decrement($key, $val = 1){
-        return $this->memcache->decrement($key, $val);
-    }
 }
