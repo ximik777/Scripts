@@ -34,7 +34,7 @@ class mysqli_client {
             $this->db_handle->autocommit(true);
         }
 
-        if(!$this->config['charset'] !== false){
+        if($this->config['charset'] !== false){
             $this->db_handle->query("SET NAMES '" . $this->config['charset'] . "';");
         }
         return true;
