@@ -1,11 +1,29 @@
 <?
+// v1.0.0
+// Example
+//$mail = new MimeMail($config['mail']);
+//$mail->to('example@example.com', 'John Smith');
+//$mail->subject('Восстановление пароля');
+//    $mail->text('Hello! How are you?');
+////  OR
+////  $embed_html_image = true;
+////  $mail->html(file_get_contents('http://example.com'), $embed_html_image);
+//$mail->attachment("./path/to/file/example.json");
+//
+//$mail->send();
+//
+//if($mail->error){
+//    echo $mail->error;
+//}
+
+
 class MimeMail {
-    var $mailer = 'ProjectName Mailer 1.0';
+    var $mailer = '[Project name] Mailer 1.0';
 
     var $_to = '';
     var $_to_name = '';
-    var $_from = '';
-    var $_from_name = '';
+    var $_from = 'no-reply@example.com';
+    var $_from_name = '[Project name]';
     var $_subject = '';
     var $_text = false;
 
@@ -24,12 +42,19 @@ class MimeMail {
 
     var $template = array();
 
-    var $config = array('host' => '', 'port' => '25', 'user' => '', 'pass' => '', 'auth' => true);
+    var $config = array(
+        'host' => '',
+        'port' => '25',
+        'user' => '',
+        'pass' => '',
+        'auth' => true,
+        'ssl'=>false
+    );
 
     var $log = array();
 
     function __construct($config) {
-        $this->config        = array_merge($this->config, $config);
+        $this->config           = array_merge($this->config, $config);
         $this->mixed_boundary   = str_repeat('-', 12).substr(md5(time()-1),0,25);
         $this->alt_boundary     = str_repeat('-', 12).substr(md5(time()-2),0,25);
         $this->related_boundary = str_repeat('-', 12).substr(md5(time()-3),0,25);
@@ -71,9 +96,8 @@ class MimeMail {
         return 'src="'.($this->embed($matches[1])).'"';
     }
 
-    function html($url = '', $ei = false){
-        if(!$content = file_get_contents($url))
-            return false;
+    function html($content = '', $ei = false){
+        if($content == '') return false;
         $this->_text = $this->minify_html($content);
 
         if($ei){
@@ -82,7 +106,6 @@ class MimeMail {
                 array($this, 'embed_images'),
                 $this->_text);
         }
-
         return true;
     }
 
@@ -99,12 +122,6 @@ class MimeMail {
         }
 
         if (count($this->embeded) > 0) {
-            //$this->headers[] = "Content-Type: multipart/alternative;\r\n boundary=\"{$this->alt_boundary}\"\r\n";
-            //$this->headers[] = "--{$this->alt_boundary}";
-            //$this->headers[] = "Content-Type: text/plain; charset=" . $this->charset;
-            //$this->headers[] = "Content-Transfer-Encoding: base64\r\n";
-            //$this->headers[] = chunk_split(base64_encode('Hello word!'),76) . "\r\n";
-            //$this->headers[] = "--{$this->alt_boundary}";
             $this->headers[] = "Content-Type: multipart/related;\r\n boundary=\"{$this->related_boundary}\"\r\n";
             $this->headers[] = "--{$this->related_boundary}";
         }
@@ -116,7 +133,6 @@ class MimeMail {
         if (count($this->embeded) > 0) {
             $this->headers[] = implode('', $this->embeded);
             $this->headers[] = "--{$this->related_boundary}--\r\n";
-           //$this->headers[] = "--{$this->alt_boundary}--\r\n";
         }
 
         if (count($this->attache) > 0) {
@@ -133,7 +149,6 @@ class MimeMail {
 
     function mime_type($filename) {
         $mime_types = array(
-
             'txt' => 'text/plain',
             'htm' => 'text/html',
             'html' => 'text/html',
@@ -144,7 +159,6 @@ class MimeMail {
             'xml' => 'application/xml',
             'swf' => 'application/x-shockwave-flash',
             'flv' => 'video/x-flv',
-
             // images
             'png' => 'image/png',
             'jpe' => 'image/jpeg',
@@ -157,32 +171,27 @@ class MimeMail {
             'tif' => 'image/tiff',
             'svg' => 'image/svg+xml',
             'svgz' => 'image/svg+xml',
-
             // archives
             'zip' => 'application/zip',
             'rar' => 'application/x-rar-compressed',
             'exe' => 'application/x-msdownload',
             'msi' => 'application/x-msdownload',
             'cab' => 'application/vnd.ms-cab-compressed',
-
             // audio/video
             'mp3' => 'audio/mpeg',
             'qt' => 'video/quicktime',
             'mov' => 'video/quicktime',
-
             // adobe
             'pdf' => 'application/pdf',
             'psd' => 'image/vnd.adobe.photoshop',
             'ai' => 'application/postscript',
             'eps' => 'application/postscript',
             'ps' => 'application/postscript',
-
             // ms office
             'doc' => 'application/msword',
             'rtf' => 'application/rtf',
             'xls' => 'application/vnd.ms-excel',
             'ppt' => 'application/vnd.ms-powerpoint',
-
             // open office
             'odt' => 'application/vnd.oasis.opendocument.text',
             'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
@@ -198,9 +207,8 @@ class MimeMail {
             finfo_close($finfo);
             return $mimetype;
         }
-        else {
-            return 'application/octet-stream';
-        }
+
+        return 'application/octet-stream';
     }
 
     function attachment($file, $octet_stream = true) {
@@ -237,10 +245,8 @@ class MimeMail {
         return "cid:{$content_id}";
     }
 
-
-
     private function send_mail() {
-        $cp = fsockopen($this->config['host'], $this->config['port']);
+        $cp = fsockopen(($this->config['ssl'] ? 'ssl://' : '') . $this->config['host'], $this->config['port']);
         if (!$cp) {
             $this->error  = 'Failed to even make a connection';
             return false;
