@@ -103,7 +103,7 @@ class mysqli_client {
         return $array;
     }
 
-    function getKeyValArray($sql, $data_arr = null) {
+    function get_key_val_array($sql, $data_arr = null) {
         if (!$res = $this->query($sql, $data_arr)) return false;
         $array = array();
         while ($row = $res->fetch_array()) {
