@@ -103,11 +103,10 @@ class mysqli_client {
         return $array;
     }
 
-    function getKeyValArray($sql, $replArr = null) {
-        if (!$res = $this->query($sql, $replArr))
-            return false;
+    function getKeyValArray($sql, $data_arr = null) {
+        if (!$res = $this->query($sql, $data_arr)) return false;
         $array = array();
-        while ($row = $res->fetch_assoc()) {
+        while ($row = $res->fetch_array()) {
             $array[$row[0]] = $row[1];
         }
         return $array;
