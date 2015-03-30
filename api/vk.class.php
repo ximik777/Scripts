@@ -1,4 +1,15 @@
 <?
+/*
+$data =  array(
+                'APP_ID' => '',
+                'APP_SECRET' => '',
+                'REDIRECT_URI' => '',
+                'DISPLAY' => 'page',
+            ),
+
+*/
+
+
 class OAuth
 {
     var $access_token;
@@ -12,8 +23,8 @@ class OAuth
         'REDIRECT_URI' => '',
         'DISPLAY' => 'page', // page OR popup OR touch OR wap
         'SCOPE' => array(
-            'notify', // Пользователь разрешил отправлять ему уведомления.
-            'email',
+            //'notify', // Пользователь разрешил отправлять ему уведомления.
+            //'email',
             //'friends', // Доступ к друзьям.
             //'photos',// Доступ к фотографиям.
             //'audio',	// Доступ к аудиозаписям.
@@ -24,7 +35,7 @@ class OAuth
             //'wall',	// Доступ к обычным и расширенным методам работы со стеной.
             //'groups',// Доступ к группам пользователя.
             //'ads',	// Доступ к расширенным методам работы с рекламным API.
-            //'offline' // Доступ к API в любое время со стороннего сервера.
+            'offline' // Доступ к API в любое время со стороннего сервера.
         ),
         'URI_METHOD' => 'https://api.vk.com/method/{METHOD_NAME}?{PARAMETERS}&access_token={ACCESS_TOKEN}',
         'URI_AUTH' => 'https://oauth.vk.com/authorize?client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&scope={SCOPE}&display={DISPLAY}&response_type=code',
