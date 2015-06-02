@@ -1,5 +1,5 @@
 <?
-function arr2xml($data, $i = -1){
+    function arr2xml($data, $i = -1){
         $result = array(); $i++;
         if($i===0) $result[] = '<?xml version="1.0" encoding="utf-8"?>';
         foreach($data as $k => $v){
@@ -7,3 +7,5 @@ function arr2xml($data, $i = -1){
         }
         return implode("\r\n", $result);
     }
+
+    $array = array();

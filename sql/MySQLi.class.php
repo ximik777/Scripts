@@ -1,15 +1,17 @@
 <?
-// v1.0.0
+// v1.2.1
 class mysqli_client {
-    var $db_handle;
+    var $handle;
     var $sql;
     var $error;
     var $errno;
+
     var $config = array(
-        'host' => 'localhost:3306',
+        'host' => 'localhost',
         'user' => '',
         'pass' => '',
         'name' => '',
+        'port' => '3306',
         'charset' => 'utf8',
         'persistent' => false,
         'autocommit' => true
@@ -22,20 +24,21 @@ class mysqli_client {
             $this->config['host'] = 'p:'.$this->config['host'];
         }
 
-        $this->db_handle = new mysqli($this->config['host'], $this->config['user'], $this->config['pass'], $this->config['name']);
+        $this->handle = @new mysqli($this->config['host'], $this->config['user'], $this->config['pass'], $this->config['name'], $this->config['port']);
 
-        if ($this->db_handle->connect_errno) {
-            $this->errno     = $this->db_handle->connect_errno;
-            $this->error     = $this->errno . ' ' . $this->db_handle->connect_error;
-            $this->db_handle = false;
+        if ($this->handle->connect_errno) {
+            $this->errno     = $this->handle->connect_errno;
+            $this->error     = $this->errno . ' ' . $this->handle->connect_error;
+            $this->handle = false;
             return false;
         }
-        if($this->config['persistent'] === true){
-            $this->db_handle->autocommit(true);
+
+        if($this->config['autocommit'] === true){
+            $this->handle->autocommit(true);
         }
 
         if($this->config['charset'] !== false){
-            $this->db_handle->query("SET NAMES {$this->config['charset']}");
+            $this->handle->query("SET NAMES {$this->config['charset']}");
         }
         return true;
     }
@@ -66,9 +69,9 @@ class mysqli_client {
 
     function query($sql, $data_arr = null) {
         $this->sql = $this->query_replace($sql, $data_arr);
-        if (!$res = $this->db_handle->query($this->sql)) {
-            $this->errno = $this->db_handle->errno;
-            $this->error = $this->sql . ' ' . $this->errno . ' ' . $this->db_handle->error;
+        if (!$res = $this->handle->query($this->sql)) {
+            $this->errno = $this->handle->errno;
+            $this->error = $this->sql . ' ' . $this->errno . ' ' . $this->handle->error;
             return false;
         }
         return $res;
@@ -76,12 +79,12 @@ class mysqli_client {
 
     function query_insert($sql, $data_arr = null){
         $this->query($sql, $data_arr);
-        return $this->db_handle->insert_id;
+        return $this->handle->insert_id;
     }
 
     function query_affected_rows($sql, $data_arr = null){
         $this->query($sql, $data_arr);
-        return $this->db_handle->affected_rows;
+        return $this->handle->affected_rows;
     }
 
     function get_value_query($sql, $data_arr = null){
@@ -114,7 +117,7 @@ class mysqli_client {
 
     function get_affected_rows($sql, $data_arr = null){
         $this->query($sql, $data_arr);
-        return $this->db_handle->affected_rows;
+        return $this->handle->affected_rows;
     }
 
     function get_one_line_assoc($sql, $data_arr = null){
@@ -176,6 +179,7 @@ class mysqli_client {
     }
 
     public function __destruct(){
-        $this->db_handle->close();
+        if($this->handle)
+            $this->handle->close();
     }
 }
