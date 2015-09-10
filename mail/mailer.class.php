@@ -17,15 +17,28 @@
 //}
 
 
-class MimeMail {
-    var $mailer = '[Project name] Mailer 1.0';
+<?
 
-    var $_to = '';
-    var $_to_name = '';
-    var $_from = 'no-reply@example.com';
-    var $_from_name = '[Project name]';
+class MimeMail
+{
+    var $mailer = 'Mime Mailer 1.0';
+
+    var $_to = false;
+    var $_to_name = false;
+
+    var $_cc = array();
+
+    var $_bcc = array();
+
+    var $_from = false;
+    var $_from_name = false;
+
+    var $_reply_to = false;
+
     var $_subject = '';
     var $_text = false;
+
+    var $addresses = array();
 
     var $error = false;
 
@@ -48,39 +61,75 @@ class MimeMail {
         'user' => '',
         'pass' => '',
         'auth' => true,
-        'ssl'=>false
+        'ssl' => false,
+        'from' => false,
+        'from_name' => false
     );
 
     var $log = array();
 
-    function __construct($config) {
-        $this->config           = array_merge($this->config, $config);
-        $this->mixed_boundary   = str_repeat('-', 12).substr(md5(time()-1),0,25);
-        $this->alt_boundary     = str_repeat('-', 12).substr(md5(time()-2),0,25);
-        $this->related_boundary = str_repeat('-', 12).substr(md5(time()-3),0,25);
+    function __construct($config = array())
+    {
+        $this->config = array_merge($this->config, $config);
+        $this->mixed_boundary = str_repeat('-', 12) . substr(md5(time() - 1), 0, 25);
+        $this->alt_boundary = str_repeat('-', 12) . substr(md5(time() - 2), 0, 25);
+        $this->related_boundary = str_repeat('-', 12) . substr(md5(time() - 3), 0, 25);
+
+        $this->_from = $config['from'] ?: $this->_from;
+        $this->_from_name = $config['from_name'] ?: $this->_from_name;
+
+        if(!$this->_from){
+            $this->_from = $config['user'];
+        }
     }
 
-    function to($to = NULL, $to_name = NULL) {
-        $this->_to      = $to;
+    function to($to = false, $to_name = false)
+    {
+        $this->_to = $to;
         $this->_to_name = $to_name ? $to_name : false;
     }
 
-    function from($from = NULL, $from_name = NULL) {
-        $this->_from      = $from ?: $this->_from;
+    function reply_to($reply_to = false)
+    {
+        $this->_reply_to = $reply_to;
+    }
+
+    function cc($cc = false)
+    {
+        if (is_array($cc))
+            $this->_cc = array_merge($this->_cc, $cc);
+        if (is_string($cc))
+            $this->_cc[] = $cc;
+    }
+
+    function Bcc($bcc = false)
+    {
+        if (is_array($bcc))
+            $this->_bcc = array_merge($this->_bcc, $bcc);
+        if (is_string($bcc))
+            $this->_bcc[] = $bcc;
+    }
+
+    function from($from = false, $from_name = false)
+    {
+        $this->_from = $from ?: $this->_from;
         $this->_from_name = $from_name ?: $this->_from_name;
     }
 
-    function subject($subject = '') {
+    function subject($subject = '')
+    {
         $this->_subject = $subject != '' ? strip_tags(trim($subject)) : $this->_subject;
     }
 
-    function text($text = '', $subject = '') {
-        $this->_text = $text!=='' ? $text : false;
+    function text($text = '', $subject = '')
+    {
+        $this->_text = $text !== '' ? $text : false;
         $this->subject($subject);
     }
 
-    function minify_html($buffer) {
-        return  preg_replace(array(
+    function minify_html($buffer)
+    {
+        return preg_replace(array(
             '/\>[^\S ]+/s',
             '/[^\S ]+\</s',
             '/(\s)+/s'
@@ -91,16 +140,18 @@ class MimeMail {
         ), $buffer);
     }
 
-    function embed_images($matches){
-        if(strstr($matches[1], 'cid:')) return $matches[0];
-        return 'src="'.($this->embed($matches[1])).'"';
+    function embed_images($matches)
+    {
+        if (strstr($matches[1], 'cid:')) return $matches[0];
+        return 'src="' . ($this->embed($matches[1])) . '"';
     }
 
-    function html($content = '', $ei = false){
-        if($content == '') return false;
+    function html($content = '', $ei = false)
+    {
+        if ($content == '') return false;
         $this->_text = $this->minify_html($content);
 
-        if($ei){
+        if ($ei) {
             $this->_text = preg_replace_callback(
                 '/src="([^"]*)"/',
                 array($this, 'embed_images'),
@@ -109,9 +160,46 @@ class MimeMail {
         return true;
     }
 
-    function send() {
+    function getTemplate($uri = '', $get_params = array(), $ei = false)
+    {
+        if ($uri == '') return false;
+
+        if ($get_params !== array()) {
+            $uri .= '?' . http_build_query($get_params);
+        }
+
+        if (!$template = file_get_contents($uri)) {
+            return false;
+        }
+
+        $this->_text = $this->minify_html($template);
+
+        if ($ei) {
+            $this->_text = preg_replace_callback(
+                '/src="([^"]*)"/',
+                array($this, 'embed_images'),
+                $this->_text);
+        }
+        return true;
+    }
+
+    function send()
+    {
+
+        $this->headers[] = 'Date: ' . date('r');
+
+        if (count($this->_bcc))
+            $this->headers[] = 'BCC: ' . (implode(', ', $this->_bcc));
+
         $this->headers[] = 'To: ' . ($this->_to_name ? '=?' . $this->charset . '?B?' . base64_encode($this->_to_name) . '?=' : '') . ' <' . $this->_to . '>';
-        $this->headers[] = 'From: ' . ($this->_from_name !== '' ? '=?' . $this->charset . '?B?' . base64_encode($this->_from_name) . '?=' : '') . ' <' . $this->_from . '>';
+
+        if($this->_reply_to)
+            $this->headers[] = 'Reply-To: ' . $this->_reply_to;
+
+        if (count($this->_cc))
+            $this->headers[] = 'Cc: ' . (implode(', ', $this->_cc));
+
+        $this->headers[] = 'From: ' . ($this->_from_name ? '=?' . $this->charset . '?B?' . base64_encode($this->_from_name) . '?=' : '') . ' <' . $this->_from . '>';
         $this->headers[] = 'Subject: ' . ($this->_subject !== '' ? '=?' . $this->charset . '?B?' . base64_encode($this->_subject) . '?=' : '');
         $this->headers[] = 'X-Mailer: ' . $this->mailer;
         $this->headers[] = $this->mime_version;
@@ -128,7 +216,7 @@ class MimeMail {
 
         $this->headers[] = "Content-Type: text/html; charset={$this->charset}";
         $this->headers[] = "Content-Transfer-Encoding: base64" . "\r\n";
-        $this->headers[] = chunk_split(base64_encode($this->_text),76) . "\r\n";
+        $this->headers[] = chunk_split(base64_encode($this->_text), 76) . "\r\n";
 
         if (count($this->embeded) > 0) {
             $this->headers[] = implode('', $this->embeded);
@@ -143,11 +231,17 @@ class MimeMail {
         $this->headers[] = "\r\n.\r\n";
         $this->data = implode("\r\n", $this->headers);
 
+        $this->addresses[] = $this->_to;
+        $this->addresses = array_unique(
+            array_merge($this->addresses, $this->_bcc, $this->_cc)
+        );
+
         return $this->send_mail();
     }
 
 
-    function mime_type($filename) {
+    function mime_type($filename)
+    {
         $mime_types = array(
             'txt' => 'text/plain',
             'htm' => 'text/html',
@@ -197,11 +291,10 @@ class MimeMail {
             'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
         );
 
-        $ext = strtolower(array_pop(explode('.',$filename)));
+        $ext = strtolower(array_pop(explode('.', $filename)));
         if (array_key_exists($ext, $mime_types)) {
             return $mime_types[$ext];
-        }
-        elseif (function_exists('finfo_open')) {
+        } elseif (function_exists('finfo_open')) {
             $finfo = finfo_open(FILEINFO_MIME);
             $mimetype = finfo_file($finfo, $filename);
             finfo_close($finfo);
@@ -211,31 +304,33 @@ class MimeMail {
         return 'application/octet-stream';
     }
 
-    function attachment($file, $octet_stream = true) {
+    function attachment($file, $octet_stream = true)
+    {
         if (!$file_data = file_get_contents($file))
             return false;
 
         $basename = basename($file);
-        $attach   = "--{$this->mixed_boundary}\r\n";
-        $attach  .= "Content-Type: " . ($octet_stream ? 'application/octet-stream' : ($this->mime_type($file))) . "; name=\"=?" . $this->charset . "?B?" . base64_encode($basename) . "?=\"\r\n";
-        $attach  .= "Content-Transfer-Encoding: base64\r\n";
-        $attach  .= "Content-Disposition: attachment; name=\"=?" . $this->charset . "?B?" . base64_encode($basename) . "?=\"\r\n\r\n";
-        $attach  .= chunk_split(base64_encode($file_data), 76);
+        $attach = "--{$this->mixed_boundary}\r\n";
+        $attach .= "Content-Type: " . ($octet_stream ? 'application/octet-stream' : ($this->mime_type($file))) . "; name=\"=?" . $this->charset . "?B?" . base64_encode($basename) . "?=\"\r\n";
+        $attach .= "Content-Transfer-Encoding: base64\r\n";
+        $attach .= "Content-Disposition: attachment; name=\"=?" . $this->charset . "?B?" . base64_encode($basename) . "?=\"\r\n\r\n";
+        $attach .= chunk_split(base64_encode($file_data), 76);
         $this->attache[] = $attach;
 
         return true;
     }
 
 
-    function embed($file) {
+    function embed($file)
+    {
         if (!$file_data = file_get_contents($file))
             return false;
-        $content_id = md5(rand()).strstr($this->_from, '@');
+        $content_id = md5(rand()) . strstr($this->_from, '@');
         $mime_type = $this->mime_type($file);
         list($type, $ext) = explode('/', $mime_type);
-        $name = (md5(rand())).".{$ext}";
+        $name = (md5(rand())) . ".{$ext}";
 
-        $embed  = "--{$this->related_boundary}\r\n";
+        $embed = "--{$this->related_boundary}\r\n";
         $embed .= "Content-Type: " . $mime_type . ";\r\n name=\"{$name}\"\r\n";
         $embed .= "Content-Transfer-Encoding: base64\r\n";
         $embed .= "Content-ID: <{$content_id}>\r\n";
@@ -245,23 +340,24 @@ class MimeMail {
         return "cid:{$content_id}";
     }
 
-    private function send_mail() {
+    private function send_mail()
+    {
         $cp = fsockopen(($this->config['ssl'] ? 'ssl://' : '') . $this->config['host'], $this->config['port']);
         if (!$cp) {
-            $this->error  = 'Failed to even make a connection';
+            $this->error = 'Failed to even make a connection';
             return false;
         }
 
         $res = fgets($cp, 256);
         if (substr($res, 0, 3) != "220") {
-            $this->error  = 'Failed to connect';
+            $this->error = 'Failed to connect';
             return false;
         }
 
         fputs($cp, "HELO " . $_SERVER["HTTP_HOST"] . "\r\n");
         $res = fgets($cp, 256);
         if (substr($res, 0, 3) != "250") {
-            $this->error  = 'Failed to Introduce';
+            $this->error = 'Failed to Introduce';
             return false;
         }
 
@@ -269,21 +365,21 @@ class MimeMail {
             fputs($cp, "AUTH LOGIN\r\n");
             $res = fgets($cp, 256);
             if (substr($res, 0, 3) != "334") {
-                $this->error  = 'Failed to Initiate Authentication';
+                $this->error = 'Failed to Initiate Authentication';
                 return false;
             }
 
             fputs($cp, base64_encode($this->config['user']) . "\r\n");
             $res = fgets($cp, 256);
             if (substr($res, 0, 3) != "334") {
-                $this->error  = 'Failed to Provide Username for Authentication';
+                $this->error = 'Failed to Provide Username for Authentication';
                 return false;
             }
 
             fputs($cp, base64_encode($this->config['pass']) . "\r\n");
             $res = fgets($cp, 256);
             if (substr($res, 0, 3) != "235") {
-                $this->error  = 'Failed to Authenticate password';
+                $this->error = 'Failed to Authenticate password';
                 return false;
             }
         }
@@ -291,21 +387,23 @@ class MimeMail {
         fputs($cp, "MAIL FROM: <" . $this->_from . ">\r\n");
         $res = fgets($cp, 256);
         if (substr($res, 0, 3) != "250") {
-            $this->error  = 'MAIL FROM failed';
+            $this->error = 'MAIL FROM failed';
             return false;
         }
 
-        fputs($cp, "RCPT TO: <" . $this->_to . ">\r\n");
-        $res = fgets($cp, 256);
-        if (substr($res, 0, 3) != "250") {
-            $this->error  = 'RCPT TO failed';
-            return false;
+        foreach ($this->addresses as $k => $v) {
+            fputs($cp, "RCPT TO: <" . $v . ">\r\n");
+            $res = fgets($cp, 256);
+            if (substr($res, 0, 3) != "250") {
+                $this->error = 'RCPT TO failed';
+                return false;
+            }
         }
 
         fputs($cp, "DATA\r\n");
         $res = fgets($cp, 256);
         if (substr($res, 0, 3) != "354") {
-            $this->error  = 'DATA failed';
+            $this->error = 'DATA failed';
             return false;
         }
 
@@ -313,21 +411,22 @@ class MimeMail {
 
         $res = fgets($cp, 256);
         if (substr($res, 0, 3) != "250") {
-            $this->error  = 'Message Body Failed:' . $res;
+            $this->error = 'Message Body Failed:' . $res;
             return false;
         }
 
         fputs($cp, "QUIT\r\n");
         $res = fgets($cp, 256);
         if (substr($res, 0, 3) != "221") {
-            $this->error  = 'QUIT failed';
+            $this->error = 'QUIT failed';
             return false;
         }
 
         if (!fclose($cp)) {
-            $this->error  = 'fsock not closed';
+            $this->error = 'fsock not closed';
         }
 
         return true;
     }
 }
+
