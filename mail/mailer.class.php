@@ -52,6 +52,7 @@ class MimeMail
     var $embeded = array();
     var $attache = array();
     var $emailboundary = '';
+    var $http_host = false;
 
     var $template = array();
 
@@ -60,7 +61,7 @@ class MimeMail
         'port' => '25',
         'user' => '',
         'pass' => '',
-        'auth' => true,
+        'auth' => false,
         'ssl' => false,
         'from' => false,
         'from_name' => false
@@ -68,19 +69,29 @@ class MimeMail
 
     var $log = array();
 
+    var $socket = false;
+
     function __construct($config = array())
     {
         $this->config = array_merge($this->config, $config);
+
         $this->mixed_boundary = str_repeat('-', 12) . substr(md5(time() - 1), 0, 25);
         $this->alt_boundary = str_repeat('-', 12) . substr(md5(time() - 2), 0, 25);
         $this->related_boundary = str_repeat('-', 12) . substr(md5(time() - 3), 0, 25);
 
-        $this->_from = $config['from'] ?: $this->_from;
-        $this->_from_name = $config['from_name'] ?: $this->_from_name;
+        $this->_from = $this->config['from'] ?: $this->_from;
+        $this->_from_name = $this->config['from_name'] ?: $this->_from_name;
 
-        if(!$this->_from){
-            $this->_from = $config['user'];
+        if(!$this->_from && $this->config['user'] != ''){
+            $this->_from = $this->config['user'];
         }
+
+        if($this->_from){
+            list (, $this->http_host) = explode('@', $this->_from);
+        } else {
+            $this->http_host = isset($_SERVER) && $_SERVER['HTTP_HOST'] ? $_SERVER['HTTP_HOST'] : '';
+        }
+
     }
 
     function to($to = false, $to_name = false)
@@ -228,7 +239,7 @@ class MimeMail
             $this->headers[] = "--{$this->mixed_boundary}--\r\n\r\n";
         }
 
-        $this->headers[] = "\r\n.\r\n";
+        $this->headers[] = "\r\n.";
         $this->data = implode("\r\n", $this->headers);
 
         $this->addresses[] = $this->_to;
@@ -236,7 +247,11 @@ class MimeMail
             array_merge($this->addresses, $this->_bcc, $this->_cc)
         );
 
-        return $this->send_mail();
+        if($this->config['auth'] === false){
+            return mail(NULL, NULL, NULL, $this->data);
+        }
+
+        return $this->smtp_send_mail();
     }
 
 
@@ -340,89 +355,103 @@ class MimeMail
         return "cid:{$content_id}";
     }
 
-    private function send_mail()
+    private function socket_open(){
+        if(!$this->socket = @fsockopen(($this->config['ssl'] ? 'ssl://' : '') . $this->config['host'], $this->config['port'])){
+            return false;
+        }
+        return true;
+    }
+
+    private function read()
     {
-        $cp = fsockopen(($this->config['ssl'] ? 'ssl://' : '') . $this->config['host'], $this->config['port']);
-        if (!$cp) {
+        if(!$this->socket) return false;
+        $res = fgets($this->socket, 256);
+        return substr($res, 0, 3);
+    }
+
+    private function write($str)
+    {
+        if(!$this->socket) return false;
+        return fwrite($this->socket, $str."\r\n");
+    }
+
+    function command($command)
+    {
+        if(!$this->socket) return false;
+        $this->write($command);
+        return $this->read();
+    }
+
+    function close()
+    {
+        if(!$this->socket) return false;
+        return fclose($this->socket);
+    }
+
+
+    private function smtp_send_mail()
+    {
+        if(!$this->socket_open()){
             $this->error = 'Failed to even make a connection';
             return false;
         }
 
-        $res = fgets($cp, 256);
-        if (substr($res, 0, 3) != "220") {
+        if($this->read() != '220'){
             $this->error = 'Failed to connect';
             return false;
         }
 
-        fputs($cp, "HELO " . $_SERVER["HTTP_HOST"] . "\r\n");
-        $res = fgets($cp, 256);
-        if (substr($res, 0, 3) != "250") {
+        if($this->command("HELO " . $_SERVER["HTTP_HOST"]) != '250'){
             $this->error = 'Failed to Introduce';
             return false;
         }
 
         if ($this->config['auth']) {
-            fputs($cp, "AUTH LOGIN\r\n");
-            $res = fgets($cp, 256);
-            if (substr($res, 0, 3) != "334") {
+
+            if($this->command("AUTH LOGIN") != '334'){
                 $this->error = 'Failed to Initiate Authentication';
                 return false;
             }
 
-            fputs($cp, base64_encode($this->config['user']) . "\r\n");
-            $res = fgets($cp, 256);
-            if (substr($res, 0, 3) != "334") {
+            if($this->command(base64_encode($this->config['user'])) != '334'){
                 $this->error = 'Failed to Provide Username for Authentication';
                 return false;
             }
 
-            fputs($cp, base64_encode($this->config['pass']) . "\r\n");
-            $res = fgets($cp, 256);
-            if (substr($res, 0, 3) != "235") {
+            if($this->command(base64_encode($this->config['pass'])) != '235'){
                 $this->error = 'Failed to Authenticate password';
                 return false;
             }
         }
 
-        fputs($cp, "MAIL FROM: <" . $this->_from . ">\r\n");
-        $res = fgets($cp, 256);
-        if (substr($res, 0, 3) != "250") {
+        if($this->command("MAIL FROM: <" . $this->_from . ">") != '250'){
             $this->error = 'MAIL FROM failed';
             return false;
         }
 
         foreach ($this->addresses as $k => $v) {
-            fputs($cp, "RCPT TO: <" . $v . ">\r\n");
-            $res = fgets($cp, 256);
-            if (substr($res, 0, 3) != "250") {
-                $this->error = 'RCPT TO failed';
+            if($this->command("RCPT TO: <" . $v . ">") != '250'){
+                $this->error = 'MAIL FROM failed';
                 return false;
             }
         }
 
-        fputs($cp, "DATA\r\n");
-        $res = fgets($cp, 256);
-        if (substr($res, 0, 3) != "354") {
+        if($this->command("DATA") != '354'){
             $this->error = 'DATA failed';
             return false;
         }
 
-        fputs($cp, $this->data);
-
-        $res = fgets($cp, 256);
-        if (substr($res, 0, 3) != "250") {
-            $this->error = 'Message Body Failed:' . $res;
+        if($this->command($this->data) != '250'){
+            $this->error = 'Message Body Failed';
             return false;
         }
 
-        fputs($cp, "QUIT\r\n");
-        $res = fgets($cp, 256);
-        if (substr($res, 0, 3) != "221") {
+        if($this->command("QUIT") != '221'){
             $this->error = 'QUIT failed';
             return false;
         }
 
-        if (!fclose($cp)) {
+        if (!$this->close()) {
             $this->error = 'fsock not closed';
         }
 
